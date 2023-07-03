@@ -1,9 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import * as z from "zod";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import { Modal } from "@/components/ui/modal";
 import { useStoreModal } from "@/hooks/use-store-modal";
@@ -23,6 +26,7 @@ const formSchema = z.object({
 });
 
 export const StoreModal = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const StoreModal = useStoreModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -33,7 +37,15 @@ export const StoreModal = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      setIsLoading(true);
+      const response = await axios.post("/api/stores", values);
+      toast.success("Store Created");
+    } catch (error) {
+      toast.error("Something went Wrong!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -54,17 +66,32 @@ export const StoreModal = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="E-commerce" {...field} />
+                      <Input
+                        disabled={isLoading}
+                        placeholder="E-commerce"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-                <Button variant={"outline"} onClick={StoreModal.onClose}>
+                <Button
+                  disabled={isLoading}
+                  variant={"outline"}
+                  onClick={StoreModal.onClose}
+                >
                   Cancel
                 </Button>
-                <Button type="submit">Continue</Button>
+                <Button disabled={isLoading} type="submit">
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    ""
+                  )}
+                  Continue
+                </Button>
               </div>
             </form>
           </Form>
