@@ -13,8 +13,13 @@ const MainNav = ({
   const params = useParams();
   const routes = [
     {
+      href: `/${params.storeId}`,
+      lable: `Overview`,
+      active: pathName === `/${params.storeId}`,
+    },
+    {
       href: `/${params.storeId}/settings`,
-      lable: `settings`,
+      lable: `Settings`,
       active: pathName === `/${params.storeId}/settings`,
     },
   ];
