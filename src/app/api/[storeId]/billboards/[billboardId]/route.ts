@@ -104,44 +104,40 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { storeId: string; billboardId: string } }
+  { params }: { params: { billboardId: string; storeId: string } }
 ) {
   try {
+    console.log(params.billboardId);
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 401 });
+      return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!params.storeId) {
-      return new NextResponse("Store ID is required", { status: 400 });
-    }
     if (!params.billboardId) {
-      return new NextResponse("Billboard ID is required", { status: 400 });
+      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
-    const userStoreId = await prismadb.store.findFirst({
+    const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
         userId,
       },
     });
 
-    if (!userStoreId) {
-      return new NextResponse("Unauthorized", { status: 401 });
+    if (!storeByUserId) {
+      return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    await prismadb.billboard.deleteMany({
+    const billboard = await prismadb.billboard.delete({
       where: {
         id: params.billboardId,
       },
     });
 
-    return new NextResponse("Billboard has been succesfuly deleted", {
-      status: 201,
-    });
+    return NextResponse.json(billboard);
   } catch (error) {
     console.log("[BILLBOARD_DELETE]", error);
-    return new NextResponse("interal error", { status: 500 });
+    return new NextResponse("Internal error", { status: 500 });
   }
 }
