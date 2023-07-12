@@ -1,4 +1,4 @@
-import BillboardForm from "@/components/billboard-form";
+import BillboardForm from "@/app/(dashboard)/[storeId]/(routes)/billboards/components/billboard-form";
 import prismadb from "@/lib/prismadb";
 import React from "react";
 

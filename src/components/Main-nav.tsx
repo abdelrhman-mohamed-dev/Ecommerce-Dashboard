@@ -23,6 +23,16 @@ const MainNav = ({
       active: pathName === `/${params.storeId}/billboards`,
     },
     {
+      href: `/${params.storeId}/categories`,
+      lable: `Categories`,
+      active: pathName === `/${params.storeId}/categories`,
+    },
+    {
+      href: `/${params.storeId}/sizes`,
+      lable: `Sizes`,
+      active: pathName === `/${params.storeId}/sizes`,
+    },
+    {
       href: `/${params.storeId}/settings`,
       lable: `Settings`,
       active: pathName === `/${params.storeId}/settings`,
